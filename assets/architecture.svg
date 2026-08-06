@@ -1,0 +1,88 @@
+<svg width="1200" height="400" viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .kicker{font-family:'JetBrains Mono',monospace;font-size:11px;fill:#C8A96E;letter-spacing:3px;text-transform:uppercase}
+      .title{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:27px;fill:#F5F0EB}
+      .label{font-family:'Hanken Grotesk','Helvetica Neue',sans-serif;font-size:12px;fill:#F5F0EB;letter-spacing:1px}
+      .mono{font-family:'JetBrains Mono','SF Mono',monospace;font-size:10.5px;fill:#A09890}
+      .mono-gold{font-family:'JetBrains Mono','SF Mono',monospace;font-size:11px;fill:#C8A96E}
+      .caption{font-family:'JetBrains Mono',monospace;font-size:10px;fill:#635D57;letter-spacing:2px;text-transform:uppercase}
+    </style>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#C8A96E" stop-opacity="0.55"/><stop offset="100%" stop-color="#C8A96E" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="ambient" cx="50%" cy="45%" r="65%">
+      <stop offset="0%" stop-color="#181310" stop-opacity="1"/><stop offset="100%" stop-color="#0A0806" stop-opacity="1"/>
+    </radialGradient>
+    <filter id="softGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#C8A96E"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="400" fill="url(#ambient)"/>
+
+  <text x="60" y="42" class="kicker">L10 EVALS</text>
+  <text x="60" y="72" class="title">A loop that learns from its own failures</text>
+
+  <!-- racetrack loop: 5 nodes around an oval -->
+  <!-- positions computed on ellipse cx=600 cy=235 rx=430 ry=95 -->
+  <ellipse cx="600" cy="235" rx="430" ry="95" fill="none" stroke="#A09890" stroke-width="1" stroke-dasharray="2 6" opacity="0.3"/>
+
+  <!-- connecting arcs -->
+  <path d="M215,220 C300,150 420,140 500,145" fill="none" stroke="#C8A96E" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M700,145 C800,140 880,175 940,225" fill="none" stroke="#C8A96E" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M965,255 C930,315 830,335 700,330" fill="none" stroke="#C8A96E" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M540,330 C420,335 320,315 260,270" fill="none" stroke="#C8A96E" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M195,240 C175,232 175,230 190,222" fill="none" stroke="#C8A96E" stroke-width="2" marker-end="url(#arrow)" opacity="0.9"/>
+
+  <!-- node: eval -->
+  <g transform="translate(175,222)">
+    <circle r="42" fill="url(#glow)" opacity="0.6"/>
+    <circle r="30" fill="#141210" stroke="#C8A96E" stroke-width="2" filter="url(#softGlow)"/>
+    <text y="4" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="13" fill="#C8A96E">e</text>
+    <text y="-42" text-anchor="middle" class="label">EVAL</text>
+  </g>
+
+  <!-- node: failures -->
+  <g transform="translate(590,132)">
+    <circle r="38" fill="url(#glow)" opacity="0.55"/>
+    <circle r="27" fill="#141210" stroke="#C17767" stroke-width="2"/>
+    <line x1="-6" y1="-6" x2="6" y2="6" stroke="#C17767" stroke-width="2" stroke-linecap="round"/>
+    <line x1="6" y1="-6" x2="-6" y2="6" stroke="#C17767" stroke-width="2" stroke-linecap="round"/>
+    <text y="-40" text-anchor="middle" class="label">FAILURES</text>
+  </g>
+
+  <!-- node: L10 learn -->
+  <g transform="translate(975,238)">
+    <circle r="46" fill="url(#glow)" opacity="0.75"/>
+    <circle r="33" fill="#141210" stroke="#C8A96E" stroke-width="2.4" filter="url(#softGlow)"/>
+    <text y="-2" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="12" fill="#C8A96E">L10</text>
+    <text y="12" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" fill="#A09890">LEARN</text>
+    <text y="-52" text-anchor="middle" class="label">L10 LEARN</text>
+  </g>
+
+  <!-- node: new tests -->
+  <g transform="translate(615,332)">
+    <circle r="36" fill="url(#glow)" opacity="0.5"/>
+    <circle r="26" fill="#141210" stroke="#C8A96E" stroke-width="2"/>
+    <text y="4" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="16" fill="#F5F0EB">+</text>
+    <text y="52" text-anchor="middle" class="label">NEW TESTS</text>
+  </g>
+
+  <!-- node: re-eval -->
+  <g transform="translate(225,268)">
+    <circle r="34" fill="url(#glow)" opacity="0.45"/>
+    <circle r="24" fill="#141210" stroke="#A09890" stroke-width="1.8"/>
+    <path d="M-6,-2 A7,7 0 1 1 -6,3" fill="none" stroke="#A09890" stroke-width="1.6"/>
+    <path d="M-6,-6 L-6,-2 L-2,-3" fill="none" stroke="#A09890" stroke-width="1.6" stroke-linejoin="round"/>
+    <text y="48" text-anchor="middle" class="label">RE-EVAL</text>
+  </g>
+
+  <text x="600" y="235" text-anchor="middle" class="mono-gold" font-size="10" letter-spacing="1.5" opacity="0.5">CLOSED LOOP</text>
+
+  <line x1="60" y1="360" x2="1140" y2="360" stroke="#A09890" stroke-width="1" opacity="0.12"/>
+  <text x="60" y="382" class="caption">the suite that failed you is the suite that fixed you</text>
+</svg>

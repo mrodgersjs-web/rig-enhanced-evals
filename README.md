@@ -1,52 +1,52 @@
-# RIG-Enhanced Evals
+<div align="center">
+  <img src="assets/rig-enhanced-evals-hero.png" width="100%" />
+</div>
 
-**Self-evolving LLM evaluation with proof-gated results.**
+<br/>
 
-`rig-enhanced-evals` is a reference implementation of the RIG doctrine
-overlay applied to LLM evaluation — the same job `deepeval` or
-`promptfoo` do (score a model's response against faithfulness,
-relevance, toxicity, format compliance), but with two things bolted on
-that neither of those tools has:
+<div align="center">
+  <h3>RIG-Enhanced Evals</h3>
+  <p><em>Self-evolving LLM evaluation with proof-gated results.</em></p>
+</div>
 
-1. **L10 self-evolving harness.** Eval metrics start lenient. When one
-   gets fooled by a case whose ground truth says it should have
-   failed, that mismatch is recorded. Once the *same failure pattern*
-   repeats, the harness doesn't just log it again — it **mutates the
-   evaluator's own detection state** (extends a banned-term list,
-   turns on schema enforcement, raises a similarity threshold) and
-   **permanently pins a regression case** into the suite so the exact
-   failure can never silently resurface. The harness re-runs
-   generation after generation until it converges: zero ground-truth
-   mismatches, nothing left to learn.
-2. **Proof-gated results.** Every single eval result — pass or fail —
-   is sealed into an HMAC-SHA256-signed `ProofPacket` the moment it's
-   produced. An independent `Verifier` re-derives the signature from
-   the packet's own recorded fields and rejects anything that was
-   edited after the fact. No eval result is "real" until it passes
-   through the Verifier.
+<div align="center">
 
-Nothing in this repo is scripted or faked. The three example failure
-patterns baked into the fixture suite (leetspeak toxicity evasion,
-missing-required-key JSON, unsupported-claim token overlap) are real
-weaknesses of the corresponding heuristic metric, and the hardening
-that fixes them is a real, inspectable code path — see
-[`src/evaluator.py`](src/evaluator.py) `Evaluator._harden()`. Run
-[`.rig/smoke.sh`](.rig/smoke.sh) yourself; it prints the exact
-generation-by-generation convergence.
+![status](https://img.shields.io/badge/status-reference--implementation-C8A96E?style=flat-square&labelColor=0A0806)
+![tests](https://img.shields.io/badge/tests-9%20passing-5B8C5A?style=flat-square&labelColor=0A0806)
+![python](https://img.shields.io/badge/python-3.11%2B-C8A96E?style=flat-square&labelColor=0A0806)
+![license](https://img.shields.io/badge/license-MIT-C8A96E?style=flat-square&labelColor=0A0806)
 
-## Why this matters
+</div>
 
-Most eval frameworks treat a failing test as a line in a report. RIG
-doctrine treats it as **unassimilated signal**: if the same category
-of mistake keeps happening, the system that's supposed to catch
-mistakes should get harder to fool, and the proof that it did should
-be checkable by someone who wasn't in the room.
+<br/>
 
+> 🥇 Most eval frameworks treat a failing test as a line in a report. `rig-enhanced-evals` treats it as **unassimilated signal**: if the same mistake keeps happening, the evaluator gets harder to fool — and the proof that it did is checkable by someone who wasn't in the room.
+
+Does the same job as `deepeval` or `promptfoo` — score a response against faithfulness, relevance, toxicity, format compliance — with two things bolted on: an **L10 self-evolving harness** that mutates its own detection state on repeated failure, and **proof-gated results** sealed into HMAC-signed ProofPackets.
+
+## 60-second install
+
+```bash
+python3 -m pytest test/ -v          # unit tests
+bash .rig/smoke.sh                  # L10 smoke: prove the loop learns
+bash .rig/verify.sh                 # L8: syntax -> unit -> ... -> sign-off
+python3 -m src.l10_harness --reset --generations 5   # run the harness directly
 ```
+
+<sup>A single <code>bash .rig/smoke.sh</code> run against the reference fixtures converges in exactly 3 generations — gen 1 surfaces 4 ground-truth mismatches, gen 2 hardens all 4 patterns and pins 4 regression cases, gen 3 re-evaluates the now-14-case suite with zero mismatches.</sup>
+
+## How it works
+
+<div align="center">
+  <img src="assets/architecture.svg" width="100%" alt="Self-evolving eval architecture: Evaluator scores a case and seals a ProofPacket, learn() hardens the evaluator on repeated mismatches, and the L10Harness runs generations until convergence" />
+</div>
+
+<sub align="center">evaluate → seal ProofPacket → learn() on mismatch → harden state + pin regression case → next generation → convergence</sub>
+
+```text
 Evaluator.evaluate_case(case)
     -> runs one of 4 metrics against lenient default state
     -> seals an HMAC-signed ProofPacket for the result
-    -> writes the proof to .rig/proofs/<case_id>__<metric>.json
 
 Evaluator.learn(result, case)
     -> no-op if result.passed == case.expected_pass
@@ -57,64 +57,49 @@ Evaluator.learn(result, case)
 L10Harness.run_generation()
     -> evaluates the whole suite, calls learn() on every case
     -> for every pattern that just hardened, pins a permanent
-       regression case (id "<source>::l10-gen<N>") into the suite
-    -> repeats until a generation produces zero mismatches and
-       generates no new cases (fixed point)
+       regression case into the suite
+    -> repeats until a generation produces zero mismatches (fixed point)
 ```
 
 ## Metrics
 
-| metric | what it checks | lenient default | what hardening changes |
-|---|---|---|---|
-| `faithfulness` | response content words are supported by context | overlap threshold 0.3 | threshold raised toward 0.9 |
-| `answer_relevance` | response content words cover the query | overlap threshold 0.3 | threshold raised toward 0.9 |
-| `toxicity` | response contains no banned terms | small banned-term list, exact substring match | discovered evasions (e.g. leetspeak) are added to the banned-term list |
-| `format_compliance` | response matches its declared format (`json`/`markdown`/`plain`), with required keys for JSON schemas | required-key enforcement is off per schema until hardened | schema is added to the enforced set, so its required keys are checked from then on |
+| Metric | What it checks | Lenient default | What hardening changes |
+| :-- | :-- | :-- | :-- |
+| `faithfulness` | Response content words are supported by context | overlap threshold 0.3 | Threshold raised toward 0.9 |
+| `answer_relevance` | Response content words cover the query | overlap threshold 0.3 | Threshold raised toward 0.9 |
+| `toxicity` | Response contains no banned terms | Small banned-term list, exact match | Discovered evasions (e.g. leetspeak) get added |
+| `format_compliance` | Response matches its declared format, required keys checked | Off per schema until hardened | Schema added to enforced set |
 
-Metrics are self-contained heuristics with no network calls — every
-score is deterministic and reproducible, which is what makes the
-learning loop something you can actually run and verify rather than
-take on faith.
+<sup>Every score is deterministic and reproducible — the learning loop is something you can actually run and verify, not take on faith.</sup>
 
-## Layout
+## Why it exists
 
-```
-src/evaluator.py       Evaluator, 4 metrics, ProofPacket, learn()
-src/l10_harness.py     L10Harness — the self-evolving generation loop
-src/verifier.py        independent Verifier — re-checks ProofPackets
-.rig/fixtures/eval_suite.template.json   the 10-case reference suite
-.rig/smoke.sh          L10 smoke test (fast, asserts the loop actually learned)
-.rig/verify.sh         L8 verification (syntax -> ... -> sign-off)
-spec/features/self-evolving-eval.feature BDD spec, 3 scenarios
-test/test_evaluator.py 9 pytest cases
-AGENTS.md              TAC doctrine for agents working in this repo
-```
+- **Failure is signal, not a report line** — a repeated mismatch mutates the evaluator's own detection state
+- **Every result is proof-gated** — pass or fail, every eval seals into an HMAC-SHA256-signed ProofPacket the moment it's produced
+- **Nothing is scripted or faked** — the three baked-in failure patterns (leetspeak toxicity evasion, missing-required-key JSON, unsupported-claim overlap) are real weaknesses of the corresponding heuristic
+- **Convergence is provable, not asserted** — run `.rig/smoke.sh` yourself and watch generation-by-generation convergence print
 
-## Running it
+<details>
+<summary><strong>Proof secret</strong></summary>
 
-```bash
-python3 -m pytest test/ -v          # unit tests
-bash .rig/smoke.sh                  # L10 smoke: prove the loop learns
-bash .rig/verify.sh                 # L8: syntax -> unit -> ... -> sign-off
-python3 -m src.l10_harness --reset --generations 5   # run the harness directly
-python3 -m src.verifier .rig/proofs                  # re-verify every sealed proof
-```
+<br/>
 
-A single `bash .rig/smoke.sh` run against the reference fixtures
-converges in exactly 3 generations: generation 1 surfaces 4 ground-truth
-mismatches with zero hardening, generation 2 re-observes the same 4
-patterns and crosses the hardening threshold on all of them (4
-hardening events, 4 regression cases generated), and generation 3
-re-evaluates the now-14-case suite with hardened state and converges
-with zero mismatches.
+`ProofPacket` signatures use `RIG_PROOF_SECRET` from the environment, falling back to an insecure development default so the repo runs out of the box. **Set `RIG_PROOF_SECRET` in any real deployment** — without it, anyone who can read this repo can forge a passing proof.
 
-## Proof secret
+</details>
 
-`ProofPacket` signatures use `RIG_PROOF_SECRET` from the environment,
-falling back to an insecure development default so the repo runs
-out of the box. **Set `RIG_PROOF_SECRET` in any real deployment** —
-without it, anyone who can read this repo can forge a passing proof.
+## Documentation
 
-## License
+| Path | Role |
+| :-- | :-- |
+| [`src/evaluator.py`](src/evaluator.py) | `Evaluator`, 4 metrics, `ProofPacket`, `learn()` |
+| [`src/l10_harness.py`](src/l10_harness.py) | `L10Harness` — the self-evolving generation loop |
+| [`src/verifier.py`](src/verifier.py) | Independent `Verifier` — re-checks ProofPackets |
+| [`.rig/fixtures/eval_suite.template.json`](.rig/fixtures/eval_suite.template.json) | 10-case reference suite |
+| [`spec/features/self-evolving-eval.feature`](spec/features/self-evolving-eval.feature) | BDD spec, 3 scenarios |
+| [`AGENTS.md`](AGENTS.md) | TAC doctrine for agents working in this repo |
+| [LICENSE](LICENSE) | MIT |
 
-MIT — see [`LICENSE`](LICENSE).
+---
+
+<div align="center"><sub>Built by Mike Rodgers · Forward Deployed Engineer · <a href="https://rodgersintelligence.com">rodgersintelligence.com</a></sub></div>

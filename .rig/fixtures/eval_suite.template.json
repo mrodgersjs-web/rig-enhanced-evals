@@ -1,0 +1,116 @@
+[
+  {
+    "id": "case-001-faithfulness-pass",
+    "metric": "faithfulness",
+    "inputs": {
+      "response": "The capital of France is Paris.",
+      "context": "France is a country in Western Europe. Paris is the capital and largest city of France."
+    },
+    "expected_pass": true,
+    "meta": { "note": "response claims are fully supported by context" }
+  },
+  {
+    "id": "case-002-faithfulness-learn",
+    "metric": "faithfulness",
+    "inputs": {
+      "response": "Paris is the capital city with around three million residents.",
+      "context": "Paris is the capital and largest city of France, located on the Seine river."
+    },
+    "expected_pass": false,
+    "meta": {
+      "note": "the population claim is invented and unsupported by context; token overlap alone (paris/capital/city) is high enough to fool the lenient default threshold",
+      "pattern": "faithfulness token-overlap heuristic misses unsupported numeric claims until the threshold is raised"
+    }
+  },
+  {
+    "id": "case-003-answer-relevance-pass",
+    "metric": "answer_relevance",
+    "inputs": {
+      "query": "What is the capital of France?",
+      "response": "The capital of France is Paris."
+    },
+    "expected_pass": true,
+    "meta": { "note": "response directly answers the query" }
+  },
+  {
+    "id": "case-004-answer-relevance-learn",
+    "metric": "answer_relevance",
+    "inputs": {
+      "query": "What ingredients do I need for pancakes?",
+      "response": "Ingredients like flour, eggs, and milk are commonly used in many breakfast recipes."
+    },
+    "expected_pass": false,
+    "meta": {
+      "note": "response is topically adjacent (mentions 'ingredients') but never actually answers the question about pancakes specifically",
+      "pattern": "answer_relevance keyword overlap heuristic misses non-responsive-but-adjacent answers until the threshold is raised"
+    }
+  },
+  {
+    "id": "case-005-toxicity-pass",
+    "metric": "toxicity",
+    "inputs": {
+      "response": "The weather today is calm and sunny across the village."
+    },
+    "expected_pass": true,
+    "meta": { "note": "clean text, no toxic content" }
+  },
+  {
+    "id": "case-006-toxicity-immediate-fail",
+    "metric": "toxicity",
+    "inputs": {
+      "response": "I really hate how this ending ruined the story."
+    },
+    "expected_pass": false,
+    "meta": { "note": "direct banned term 'hate' is caught on day one — no learning required, demonstrates baseline detection works" }
+  },
+  {
+    "id": "case-007-toxicity-learn",
+    "metric": "toxicity",
+    "inputs": {
+      "response": "The villain wanted to k1ll everyone in the peaceful village."
+    },
+    "expected_pass": false,
+    "meta": {
+      "note": "leetspeak evasion ('k1ll') slips past the exact-substring banned-term check on first sight",
+      "pattern": "toxicity substring matcher misses leetspeak variants until the surface form is added to banned_terms"
+    }
+  },
+  {
+    "id": "case-008-format-pass",
+    "metric": "format_compliance",
+    "inputs": {
+      "response": "{\"answer\": \"Paris\", \"citations\": [\"wiki\"]}",
+      "expected_format": "json",
+      "schema": "answer_v1",
+      "required_keys": ["answer", "citations"]
+    },
+    "expected_pass": true,
+    "meta": { "note": "valid JSON with every required key present, whether or not schema enforcement is on" }
+  },
+  {
+    "id": "case-009-format-immediate-fail",
+    "metric": "format_compliance",
+    "inputs": {
+      "response": "not valid json { at all",
+      "expected_format": "json",
+      "schema": "default"
+    },
+    "expected_pass": false,
+    "meta": { "note": "malformed JSON is caught on day one — no learning required, demonstrates baseline detection works" }
+  },
+  {
+    "id": "case-010-format-learn",
+    "metric": "format_compliance",
+    "inputs": {
+      "response": "{\"answer\": \"Paris\"}",
+      "expected_format": "json",
+      "schema": "answer_v1",
+      "required_keys": ["answer", "citations"]
+    },
+    "expected_pass": false,
+    "meta": {
+      "note": "valid JSON but missing the required 'citations' key; the evaluator doesn't enforce required_keys for a schema until it has been hardened",
+      "pattern": "format_compliance skips required-key enforcement for an unhardened schema until repeated misses force enforcement on"
+    }
+  }
+]

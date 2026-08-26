@@ -1,4 +1,5 @@
 <div align="center">
+<p align="center"><img src="docs/rig-enhanced-evals-demo.gif" alt="rig-enhanced-evals demo" width="720" /></p>
   <img src="assets/rig-enhanced-evals-hero.png" width="100%" />
 </div>
 

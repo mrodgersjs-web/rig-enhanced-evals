@@ -1,12 +1,12 @@
-"""Independent Verifier — re-checks ProofPackets sealed by the Evaluator.
+"""Independent Verifier - re-checks ProofPackets sealed by the Evaluator.
 
 The Verifier never re-runs metric logic and never trusts the `passed`
 field on its face. It recomputes the HMAC-SHA256 signature over the
 packet's own recorded fields (case_id, metric, score, passed, evidence,
 timestamp) using the shared RIG_PROOF_SECRET and compares it, byte for
 byte, against the signature the Evaluator stored at seal time. Any
-post-hoc edit to a packet — a score bumped up, a `passed` flag flipped,
-evidence quietly rewritten — breaks the signature and is caught here.
+post-hoc edit to a packet - a score bumped up, a `passed` flag flipped,
+evidence quietly rewritten - breaks the signature and is caught here.
 
 This is the "proof" and "gate" layers of L8: nothing downstream may
 treat an eval result as real until it has passed through this module.

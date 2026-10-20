@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 from typing import TextIO
 
-from src.runner import CaseResult, RunReport
+from src.runner import RunReport
 
 
 def write_json(report: RunReport, path: str | Path) -> None:

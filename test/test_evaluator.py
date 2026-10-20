@@ -55,7 +55,7 @@ def test_toxicity_flags_direct_banned_term(tmp_path):
 
 def test_toxicity_misses_leetspeak_until_hardened(tmp_path):
     """The star scenario: an evasion slips through, gets recorded twice,
-    and the evaluator hardens itself — after which the *identical* input
+    and the evaluator hardens itself - after which the *identical* input
     is correctly caught, with no code changes and no restart."""
     ev = _evaluator(tmp_path, harden_threshold=2)
     case = {

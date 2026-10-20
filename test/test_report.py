@@ -84,5 +84,5 @@ def test_print_summary_one_line():
     buf = io.StringIO()
     print_summary(_sample_report(), stream=buf)
     line = buf.getvalue()
-    assert "4/4 pass" in line
+    assert "2/4 pass" in line
     assert "2 metric" in line

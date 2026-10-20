@@ -13,7 +13,7 @@
 <div align="center">
 
 ![status](https://img.shields.io/badge/status-reference--implementation-C8A96E?style=flat-square&labelColor=0A0806)
-[![CI](https://img.shields.io/github/actions/workflow/status/mrodgersjs-web/rig-enhanced-evals/smoke.yml?branch=main)](https://github.com/mrodgersjs-web/rig-enhanced-evals/actions/workflows/smoke.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/mrodgersjs-web/rig-enhanced-evals/ci.yml?branch=main&label=CI)](https://github.com/mrodgersjs-web/rig-enhanced-evals/actions/workflows/ci.yml) [![smoke](https://img.shields.io/github/actions/workflow/status/mrodgersjs-web/rig-enhanced-evals/smoke.yml?branch=main&label=smoke)](https://github.com/mrodgersjs-web/rig-enhanced-evals/actions/workflows/smoke.yml)
 ![python](https://img.shields.io/badge/python-3.11%2B-C8A96E?style=flat-square&labelColor=0A0806)
 ![license](https://img.shields.io/badge/license-MIT-C8A96E?style=flat-square&labelColor=0A0806)
 
@@ -24,6 +24,18 @@
 > 🥇 Most eval frameworks treat a failing test as a line in a report. `rig-enhanced-evals` treats it as **unassimilated signal**: if the same mistake keeps happening, the evaluator gets harder to fool - and the proof that it did is checkable by someone who wasn't in the room.
 
 Does the same job as `deepeval` or `promptfoo` - score a response against faithfulness, relevance, toxicity, format compliance - with two things bolted on: an **L10 self-evolving harness** that mutates its own detection state on repeated failure, and **proof-gated results** sealed into HMAC-signed ProofPackets.
+
+## Install
+
+This package is **not** published on PyPI; bare `pip install rig-enhanced-evals` will 404. From a fresh checkout:
+
+```bash
+git clone https://github.com/mrodgersjs-web/rig-enhanced-evals
+cd rig-enhanced-evals
+pip install -e ".[dev]"
+```
+
+(`pip install git+https://github.com/mrodgersjs-web/rig-enhanced-evals` is also supported.)
 
 ## 60-second install
 

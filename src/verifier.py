@@ -16,19 +16,18 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import Optional
 
 from src.evaluator import ProofPacket
 
 
 class Verifier:
-    def __init__(self, secret: Optional[str] = None):
+    def __init__(self, secret: str | None = None):
         self.secret = secret
 
     def verify_packet(self, packet: ProofPacket) -> bool:
         return packet.verify(secret=self.secret)
 
-    def verify_file(self, path: "str | Path") -> dict:
+    def verify_file(self, path: str | Path) -> dict:
         data = json.loads(Path(path).read_text())
         packet = ProofPacket.from_dict(data)
         valid = self.verify_packet(packet)
@@ -40,7 +39,7 @@ class Verifier:
             "valid_signature": valid,
         }
 
-    def verify_directory(self, directory: "str | Path") -> dict:
+    def verify_directory(self, directory: str | Path) -> dict:
         directory = Path(directory)
         files = sorted(directory.glob("*.json")) if directory.exists() else []
         reports = [self.verify_file(f) for f in files]

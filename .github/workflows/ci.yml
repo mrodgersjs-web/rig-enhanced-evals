@@ -23,7 +23,7 @@ jobs:
         run: pip install -e '.[dev]'
       - name: Lint
         run: ruff check .
-      - name: Test (fast path: no coverage)
+      - name: "Test (fast path, no coverage)"
         run: python3 -m pytest -q
       - name: Coverage (subprocess wrapper)
         timeout-minutes: 12
@@ -31,7 +31,9 @@ jobs:
         # pytest --cov plugin hangs. The 12-minute step timeout kills
         # a stuck coverage subprocess cleanly instead of running
         # until the job's 15-minute timeout.
-        run: coverage run -m pytest -q --cov=src --cov-report=term-missing
+        run: |
+          coverage run --source=src -m pytest -q
+          coverage report -m
 
   example-cli:
     name: example CLI run

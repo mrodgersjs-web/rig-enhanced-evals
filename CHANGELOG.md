@@ -6,6 +6,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [0.2.0] - 2026-10-19
 
+- This commit fixes `.github/workflows/ci.yml`, which GitHub rejected as invalid YAML (an unquoted colon in a step name), runs coverage as `coverage run` plus `coverage report` instead of mixing it with `--cov`, and adds `test/test_workflows_parse.py`, which loads every workflow with PyYAML (now in the dev extra) so this cannot recur.
+
 ### Added
 
 - `src/runner.py`: dataset loader, runner, and RunReport summariser.

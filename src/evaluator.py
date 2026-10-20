@@ -25,7 +25,6 @@ import re
 import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Optional
 
 # --------------------------------------------------------------------------
 # Text helpers
@@ -46,11 +45,11 @@ _STOPWORDS = frozenset(
 _LEET_MAP = str.maketrans({"0": "o", "1": "i", "3": "e", "4": "a", "5": "s", "7": "t", "@": "a", "$": "s"})
 
 
-def _tokenize(text: Optional[str]) -> list:
+def _tokenize(text: str | None) -> list:
     return _WORD_RE.findall((text or "").lower())
 
 
-def _content_words(text: Optional[str]) -> set:
+def _content_words(text: str | None) -> set:
     return {w for w in _tokenize(text) if w not in _STOPWORDS}
 
 
@@ -65,7 +64,7 @@ def _leet_normalize(token: str) -> str:
 DEFAULT_SECRET = "rig-enhanced-evals-insecure-dev-secret"  # override via RIG_PROOF_SECRET in real deployments
 
 
-def _sign(payload: str, secret: Optional[str] = None) -> str:
+def _sign(payload: str, secret: str | None = None) -> str:
     key = (secret or os.environ.get("RIG_PROOF_SECRET") or DEFAULT_SECRET).encode("utf-8")
     return hmac.new(key, payload.encode("utf-8"), hashlib.sha256).hexdigest()
 
@@ -93,7 +92,7 @@ class ProofPacket:
         return json.dumps(payload, sort_keys=True, separators=(",", ":"), default=str)
 
     @classmethod
-    def seal(cls, case_id, metric, score, passed, evidence, secret=None, timestamp=None) -> "ProofPacket":
+    def seal(cls, case_id, metric, score, passed, evidence, secret=None, timestamp=None) -> ProofPacket:
         ts = timestamp if timestamp is not None else time.time()
         payload = cls._canonical_payload(case_id, metric, score, passed, evidence, ts)
         signature = _sign(payload, secret)
@@ -107,7 +106,7 @@ class ProofPacket:
             signature=signature,
         )
 
-    def verify(self, secret: Optional[str] = None) -> bool:
+    def verify(self, secret: str | None = None) -> bool:
         payload = self._canonical_payload(self.case_id, self.metric, self.score, self.passed, self.evidence, self.timestamp)
         expected = _sign(payload, secret)
         return hmac.compare_digest(expected, self.signature)
@@ -116,7 +115,7 @@ class ProofPacket:
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, data: dict) -> "ProofPacket":
+    def from_dict(cls, data: dict) -> ProofPacket:
         return cls(**data)
 
 
@@ -128,7 +127,7 @@ class EvalResult:
     passed: bool
     threshold: float
     evidence: dict
-    expected_pass: Optional[bool]
+    expected_pass: bool | None
     proof: ProofPacket
 
     @property
@@ -151,9 +150,9 @@ class Evaluator:
 
     def __init__(
         self,
-        kb_path: "str | Path" = ".rig/failures.json",
-        proofs_dir: "str | Path" = ".rig/proofs",
-        secret: Optional[str] = None,
+        kb_path: str | Path = ".rig/failures.json",
+        proofs_dir: str | Path = ".rig/proofs",
+        secret: str | None = None,
         harden_threshold: int = 2,
     ) -> None:
         self.kb_path = Path(kb_path)

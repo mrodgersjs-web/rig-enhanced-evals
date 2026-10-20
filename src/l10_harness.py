@@ -5,7 +5,7 @@ disagrees with its own `expected_pass` ground truth is recorded to the
 Evaluator's knowledge base. Once a specific failure PATTERN repeats
 `harden_threshold` times, the Evaluator hardens itself (extends its
 banned-term list, starts enforcing a JSON schema, or raises a
-similarity threshold — see `Evaluator._harden`), and the harness pins a
+similarity threshold - see `Evaluator._harden`), and the harness pins a
 permanent regression case into the suite so that exact failure can
 never silently resurface.
 

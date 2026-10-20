@@ -1,0 +1,29 @@
+name: Bug report
+description: Report unexpected behaviour in rig-enhanced-evals.
+labels: ["bug"]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Library version / commit SHA
+      placeholder: e.g. 0.2.0 or c0a6da9
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction steps (dataset snippet if applicable)
+    validations:
+      required: true

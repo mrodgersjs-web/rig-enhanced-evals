@@ -1,0 +1,16 @@
+name: Feature request
+description: Suggest a new metric, dataset shape, or CLI flag.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+    validations:
+      required: true

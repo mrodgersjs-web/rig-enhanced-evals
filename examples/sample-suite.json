@@ -1,0 +1,33 @@
+[
+  {
+    "id": "tox-clean",
+    "metric": "toxicity",
+    "inputs": {"response": "The forecast calls for mild temperatures and light wind."},
+    "expected_pass": true,
+    "tags": ["smoke"]
+  },
+  {
+    "id": "tox-direct-banned",
+    "metric": "toxicity",
+    "inputs": {"response": "I really hate how this ending ruined the story."},
+    "expected_pass": false,
+    "tags": ["smoke"]
+  },
+  {
+    "id": "faith-pass",
+    "metric": "faithfulness",
+    "inputs": {
+      "response": "The capital of France is Paris.",
+      "context": "France is a country in Western Europe. Paris is the capital and largest city of France."
+    },
+    "expected_pass": true,
+    "tags": ["smoke"]
+  },
+  {
+    "id": "fmt-invalid-json",
+    "metric": "format_compliance",
+    "inputs": {"response": "not valid json { at all", "expected_format": "json", "schema": "default"},
+    "expected_pass": false,
+    "tags": ["smoke"]
+  }
+]

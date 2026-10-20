@@ -23,15 +23,15 @@ import shutil
 import time
 from pathlib import Path
 
-from src.evaluator import Evaluator, EvalResult
+from src.evaluator import EvalResult, Evaluator
 
 
 class L10Harness:
     def __init__(
         self,
         evaluator: Evaluator,
-        suite_path: "str | Path",
-        state_path: "str | Path" = ".rig/l10_state.json",
+        suite_path: str | Path,
+        state_path: str | Path = ".rig/l10_state.json",
     ) -> None:
         self.evaluator = evaluator
         self.suite_path = Path(suite_path)
@@ -62,7 +62,7 @@ class L10Harness:
     def run_generation(self) -> dict:
         generation_no = len(self.state["generations"]) + 1
         events = []
-        results: "list[EvalResult]" = []
+        results: list[EvalResult] = []
 
         for case in list(self.suite):
             result, event = self.evaluator.evaluate_and_learn(case)
@@ -126,7 +126,7 @@ class L10Harness:
         return {"generations": self.state["generations"], "suite_size": len(self.suite)}
 
 
-def _bootstrap(args) -> "tuple[Evaluator, L10Harness]":
+def _bootstrap(args) -> tuple[Evaluator, L10Harness]:
     if args.reset:
         for path in (args.kb, args.state, args.runtime):
             p = Path(path)

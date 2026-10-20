@@ -23,12 +23,13 @@ learning loop. The runner is for evaluation only.
 from __future__ import annotations
 
 import json
-from collections import Counter
+from collections.abc import Iterable, Iterator
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Iterable, Iterator
+from typing import Any
 
-from src.evaluator import Evaluator, EvalResult as EvaluationResult
+from src.evaluator import EvalResult as EvaluationResult
+from src.evaluator import Evaluator
 
 REQUIRED_KEYS = ("id", "metric", "inputs", "expected_pass")
 

@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use rig-enhanced-evals in academic work, please cite it as below."
+type: software
+title: "rig-enhanced-evals"
+abstract: "Self-evolving LLM evaluation harness with proof-gated results. Reference implementation of the RIG doctrine overlay for evaluator hardening and L10 learning."
+authors:
+  - family-names: "Rodgers"
+    given-names: "Mike"
+    email: "mrodgersjs@gmail.com"
+license: MIT
+repository-code: "https://github.com/mrodgersjs-web/rig-enhanced-evals"
+keywords:
+  - "llm-evaluation"
+  - "proof-gate"
+  - "self-evolving"
+  - "rig-doctrine"
+  - "tac"
+version: "0.2.0"
+date-released: "2026-10-19"

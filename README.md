@@ -21,9 +21,9 @@
 
 <br/>
 
-> 🥇 Most eval frameworks treat a failing test as a line in a report. `rig-enhanced-evals` treats it as **unassimilated signal**: if the same mistake keeps happening, the evaluator gets harder to fool — and the proof that it did is checkable by someone who wasn't in the room.
+> 🥇 Most eval frameworks treat a failing test as a line in a report. `rig-enhanced-evals` treats it as **unassimilated signal**: if the same mistake keeps happening, the evaluator gets harder to fool - and the proof that it did is checkable by someone who wasn't in the room.
 
-Does the same job as `deepeval` or `promptfoo` — score a response against faithfulness, relevance, toxicity, format compliance — with two things bolted on: an **L10 self-evolving harness** that mutates its own detection state on repeated failure, and **proof-gated results** sealed into HMAC-signed ProofPackets.
+Does the same job as `deepeval` or `promptfoo` - score a response against faithfulness, relevance, toxicity, format compliance - with two things bolted on: an **L10 self-evolving harness** that mutates its own detection state on repeated failure, and **proof-gated results** sealed into HMAC-signed ProofPackets.
 
 ## 60-second install
 
@@ -34,7 +34,7 @@ bash .rig/verify.sh                 # L8: syntax -> unit -> ... -> sign-off
 python3 -m src.l10_harness --reset --generations 5   # run the harness directly
 ```
 
-<sup>A single <code>bash .rig/smoke.sh</code> run against the reference fixtures converges in exactly 3 generations — gen 1 surfaces 4 ground-truth mismatches, gen 2 hardens all 4 patterns and pins 4 regression cases, gen 3 re-evaluates the now-14-case suite with zero mismatches.</sup>
+<sup>A single <code>bash .rig/smoke.sh</code> run against the reference fixtures converges in exactly 3 generations - gen 1 surfaces 4 ground-truth mismatches, gen 2 hardens all 4 patterns and pins 4 regression cases, gen 3 re-evaluates the now-14-case suite with zero mismatches.</sup>
 
 ## How it works
 
@@ -71,21 +71,21 @@ L10Harness.run_generation()
 | `toxicity` | Response contains no banned terms | Small banned-term list, exact match | Discovered evasions (e.g. leetspeak) get added |
 | `format_compliance` | Response matches its declared format, required keys checked | Off per schema until hardened | Schema added to enforced set |
 
-<sup>Every score is deterministic and reproducible — the learning loop is something you can actually run and verify, not take on faith.</sup>
+<sup>Every score is deterministic and reproducible - the learning loop is something you can actually run and verify, not take on faith.</sup>
 
 ## Why it exists
 
-- **Failure is signal, not a report line** — a repeated mismatch mutates the evaluator's own detection state
-- **Every result is proof-gated** — pass or fail, every eval seals into an HMAC-SHA256-signed ProofPacket the moment it's produced
-- **Nothing is scripted or faked** — the three baked-in failure patterns (leetspeak toxicity evasion, missing-required-key JSON, unsupported-claim overlap) are real weaknesses of the corresponding heuristic
-- **Convergence is provable, not asserted** — run `.rig/smoke.sh` yourself and watch generation-by-generation convergence print
+- **Failure is signal, not a report line** - a repeated mismatch mutates the evaluator's own detection state
+- **Every result is proof-gated** - pass or fail, every eval seals into an HMAC-SHA256-signed ProofPacket the moment it's produced
+- **Nothing is scripted or faked** - the three baked-in failure patterns (leetspeak toxicity evasion, missing-required-key JSON, unsupported-claim overlap) are real weaknesses of the corresponding heuristic
+- **Convergence is provable, not asserted** - run `.rig/smoke.sh` yourself and watch generation-by-generation convergence print
 
 <details>
 <summary><strong>Proof secret</strong></summary>
 
 <br/>
 
-`ProofPacket` signatures use `RIG_PROOF_SECRET` from the environment, falling back to an insecure development default so the repo runs out of the box. **Set `RIG_PROOF_SECRET` in any real deployment** — without it, anyone who can read this repo can forge a passing proof.
+`ProofPacket` signatures use `RIG_PROOF_SECRET` from the environment, falling back to an insecure development default so the repo runs out of the box. **Set `RIG_PROOF_SECRET` in any real deployment** - without it, anyone who can read this repo can forge a passing proof.
 
 </details>
 
@@ -94,8 +94,8 @@ L10Harness.run_generation()
 | Path | Role |
 | :-- | :-- |
 | [`src/evaluator.py`](src/evaluator.py) | `Evaluator`, 4 metrics, `ProofPacket`, `learn()` |
-| [`src/l10_harness.py`](src/l10_harness.py) | `L10Harness` — the self-evolving generation loop |
-| [`src/verifier.py`](src/verifier.py) | Independent `Verifier` — re-checks ProofPackets |
+| [`src/l10_harness.py`](src/l10_harness.py) | `L10Harness` - the self-evolving generation loop |
+| [`src/verifier.py`](src/verifier.py) | Independent `Verifier` - re-checks ProofPackets |
 | [`.rig/fixtures/eval_suite.template.json`](.rig/fixtures/eval_suite.template.json) | 10-case reference suite |
 | [`spec/features/self-evolving-eval.feature`](spec/features/self-evolving-eval.feature) | BDD spec, 3 scenarios |
 | [`AGENTS.md`](AGENTS.md) | TAC doctrine for agents working in this repo |

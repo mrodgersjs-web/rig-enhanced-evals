@@ -5,7 +5,7 @@ description = "Self-evolving LLM evaluation harness with proof-gated results —
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
-authors = [{ name = "RIG Doctrine Overlay" }]
+authors = [{ name = "Mike Rodgers", email = "mrodgersjs@gmail.com" }]
 dependencies = []
 
 [project.optional-dependencies]

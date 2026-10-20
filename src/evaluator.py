@@ -1,4 +1,4 @@
-"""RIG-Enhanced Evals — Evaluator.
+"""RIG-Enhanced Evals - Evaluator.
 
 Runs four LLM evaluation metrics (faithfulness, answer_relevance, toxicity,
 format_compliance) against a case, seals every result in an HMAC-signed
@@ -9,8 +9,8 @@ Every metric starts in a deliberately *lenient* default mode (a low
 overlap threshold, a small banned-term list, unenforced JSON schemas).
 That leniency is what lets the L10 harness demonstrate real learning:
 a case can legitimately fool the evaluator once, get recorded as a
-mismatch against its `expected_pass` ground truth, and — once the same
-failure pattern repeats — the evaluator mutates its own detection state
+mismatch against its `expected_pass` ground truth, and - once the same
+failure pattern repeats - the evaluator mutates its own detection state
 so the identical input now scores correctly. Nothing here is faked or
 pre-scripted; the score/passed values are recomputed from scratch on
 every call against whatever state the evaluator currently holds.
@@ -59,7 +59,7 @@ def _leet_normalize(token: str) -> str:
 
 
 # --------------------------------------------------------------------------
-# ProofPacket — HMAC-signed, independently re-verifiable eval receipt
+# ProofPacket - HMAC-signed, independently re-verifiable eval receipt
 # --------------------------------------------------------------------------
 
 DEFAULT_SECRET = "rig-enhanced-evals-insecure-dev-secret"  # override via RIG_PROOF_SECRET in real deployments

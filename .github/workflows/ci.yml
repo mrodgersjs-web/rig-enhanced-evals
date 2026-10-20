@@ -1,0 +1,45 @@
+name: CI
+on:
+  push:
+    branches: [main, ghup/**]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    name: test (python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install
+        run: pip install -e '.[dev]'
+      - name: Lint
+        run: ruff check .
+      - name: Test with coverage
+        run: python3 -m pytest -q --cov=src --cov-report=term-missing
+
+  example-cli:
+    name: example CLI run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -e .
+      - name: Run example suite via the CLI
+        run: |
+          python3 -m src.cli examples/sample-suite.json \
+            --kb ./.tmp/failures.json \
+            --proofs ./.tmp/proofs \
+            --md ./.tmp/report.md \
+            --exit-zero
+          head -n 20 ./.tmp/report.md

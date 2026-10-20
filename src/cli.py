@@ -29,7 +29,7 @@ from pathlib import Path
 
 from src.evaluator import Evaluator
 from src.report import print_summary, write_json, write_markdown
-from src.runner import RunReport, load_datasets, run_dataset, summarise
+from src.runner import RunReport, load_datasets, summarise
 
 DEFAULT_HARDEN_THRESHOLD = 2
 

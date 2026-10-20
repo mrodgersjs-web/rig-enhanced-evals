@@ -28,7 +28,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Iterable, Iterator
 
-from src.evaluator import Evaluator, EvaluationResult
+from src.evaluator import Evaluator, EvalResult as EvaluationResult
 
 REQUIRED_KEYS = ("id", "metric", "inputs", "expected_pass")
 
